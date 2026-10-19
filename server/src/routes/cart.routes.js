@@ -1,6 +1,8 @@
 import {Router} from 'express';
 import {addToCartValidator} from "../validators/cart.validator.js";
 import {authenticate} from "../middlewares/auth.middleware.js";
+import {addToCart} from "../controller/cart.controller.js";
+import {getCart} from "../controller/cart.controller.js";
 
 const router = Router();
 
@@ -15,8 +17,10 @@ const router = Router();
  */ 
 
 
-// req.body = {productId,quantity,size} is the request body that contains the productId, quantity and size of the product to be added to the cart. The productId is the id of the product that is to be added to the cart. The quantity is the number of products to be added to the cart. The size is the size of the product to be added to the cart.
-router.post("/", addToCartValidator,authenticate)
+router.post("/", addToCartValidator,authenticate, addToCart);
+
+router.get("/",authenticate, getCart);
+
 
 
 

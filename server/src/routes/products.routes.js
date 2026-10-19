@@ -1,7 +1,7 @@
 import {Router} from 'express';
-import {createProductValidator} from "../validators/product.validator.js";
-import {authenticate} from "../middlewares/auth.middleware.js";
-import {createProduct,listAllProducts} from "../controller/product.controller.js";
+import {createProductValidator,unListProductValidator,listProductValidator} from "../validators/product.validator.js";
+import {authenticate,authenticateSeller} from "../middlewares/auth.middleware.js";
+import {createProduct,listAllProducts,unListProduct,listProduct} from "../controller/product.controller.js";
 
 import multer from 'multer';
 
@@ -34,14 +34,7 @@ router.post("/",authenticate,
     upload.array("images"),
     
     // This middleware checks if the authenticated user has the role of "seller". If not, it returns a 403 Forbidden response. If the user is a seller, it calls next() to proceed to the next middleware or route handler.
-    (req,res,next) => {
-    if(req.user.role !== "seller"){
-        return res.status(403).json({
-            message : "You are not authorized to create a product",
-        });
-    }
-        next();
-    },
+    authenticateSeller,
 
     // This middleware parses the price and sizes fields from the request body, which are expected to be JSON strings. It converts them into JavaScript objects so that they can be easily used in the subsequent middleware or route handler.
 
@@ -80,5 +73,20 @@ router.post("/",authenticate,
 
 router.get("/",authenticate,listAllProducts)
 
+
+
+
+/**
+ * @PATCH /api/products/:id
+ * @description update the product data in the database
+ * @access to seller only
+ */ 
+
+
+
+
+router.patch("/unlist/:id",authenticate,authenticateSeller,unListProductValidator,unListProduct);
+
+router.patch("/list/:id",authenticate,authenticateSeller,listProductValidator,listProduct);
 
 export default router;

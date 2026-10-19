@@ -1,4 +1,4 @@
-import {body,validationResult} from "express-validator";
+import {body,params,validationResult} from "express-validator";
 
 
 
@@ -56,5 +56,45 @@ export const createProductValidator = [
     }
 
 
+
+]
+
+export const unListProductValidator = [
+    params("id")
+        .exists().withMessage("Product ID is required").bail()
+        .isString().withMessage("Product ID must be a string").bail()
+        .isMongoId().withMessage("Product ID must be a valid Mongo ID").bail(),
+
+    (req,res,next) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: errors.array(),
+            });
+        }
+        next();
+    }
+
+]
+
+
+
+export const listProductValidator = [
+    params("id")
+        .exists().withMessage("Product ID is required").bail()
+        .isString().withMessage("Product ID must be a string").bail()
+        .isMongoId().withMessage("Product ID must be a valid Mongo ID").bail(),
+
+    (req,res,next) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: errors.array(),
+            });
+        }
+        next();
+    }
 
 ]

@@ -53,7 +53,49 @@ export async function createProduct(req,res){
 
 export async function listAllProducts(req,res){
 
-    const products = await productModel.find()
+    const products = await productModel.find({isListed : true})
+
+    return res.status(200).json({
+        message : "Products fetched successfully",
+        data : {
+            products
+        }
+    })
+
+}
+
+
+export async function unListProduct(req,res){
+
+    const {id} = req.params
+
+    const product = await productModel.findById(id)
+
+    if(!product){
+        return res.status(404).json({
+            message : "Product not found"
+        })
+    }
+
+    await productModel.findByIdAndUpdate(id,{
+        isListed : false
+    })
+
+    
+
+    return res.status(200).json({
+        message : "Product unlisted successfully",
+        data : {
+            product
+        }
+    })
+
+}
+
+
+export async function listProduct(req,res){
+
+    const products = await productModel.find({isListed : true})
 
     return res.status(200).json({
         message : "Products fetched successfully",
